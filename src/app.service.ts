@@ -21,9 +21,11 @@ const CONTRACT_TOKENS = [];
 @Injectable()
 export class AppService {
 
+  public web3: Web3;
+
   public async init() {
     // The First way - Request All Transactions for analysis. / ERC-20. ROPSTEN Network.
-    return JSON.stringify(await this.checkBlock());
+    return JSON.stringify(await this.checkBlocks());
 
     // The Other Way - Use Web Scan App that has all the transactions analized. BEP-20. BinanceScan web app. 
     return JSON.stringify(await this.privateBinanceScanRequest('/sapi/v1/capital/config/getall'));
@@ -50,34 +52,45 @@ export class AppService {
     }
   }
 
-  async checkBlock() {
-    const [web3, addr] = this.getRobstenNetworkChain() as [Web3, string];
-    let block = await web3.eth.getBlock('latest');
-    let number = block.number;
-    console.log('Searching block ', number);
+  async checkBlocks() {
+    this.getRobstenNetworkChain();
 
-    let i=0;
-    if (block?.transactions) {
-      for (let txHash of block.transactions) {
-        console.log(`txHash: `, txHash);
-        try {
-          let tx = await web3.eth.getTransaction(txHash);
-          console.log(`Transaction_${++i}: `, tx);
+    const myAddr = TEST_METAMASK_WALLET_ADDRESS?.toLowerCase();
+    var currentBlock = await this.web3.eth.getBlockNumber();
+    var n = await this.web3.eth.getTransactionCount(myAddr, currentBlock);
+    var bal = this.getWei((await this.web3.eth.getBalance(myAddr, currentBlock)));
+    console.log('Ballance: ', bal)
+    console.log('Current Block: ', currentBlock)
+    
+    for (var i=currentBlock; i >= 0 && (n > 0 || bal > 0); --i) {
+      try {
+        let block = await this.web3.eth.getBlock(i);
+        if (block?.transactions) {
+          for (let txHash of block.transactions) {
+            let tx = await this.web3.eth.getTransaction(txHash);
+            let from = tx.from?.toLowerCase();
+            let to = tx.to?.toLowerCase();
 
-          if (TEST_METAMASK_WALLET_ADDRESS?.toLowerCase() == tx.to?.toLowerCase()) {
-            console.log('Transaction found on block: ', number);
-            console.log({
-              address: tx.from,
-              value: web3.utils.fromWei(tx.value, 'ether'),
-              timestamp: Date.now(),
-            })
+            if (myAddr == from) {
+              if (from != to)
+                bal = bal += this.getWei(tx.value);
+                console.log(i, tx.from, tx.to, this.getWei(tx.value).toString(10));
+                --n;
+            }
+            if (myAddr == to) {
+              if (from != to)
+                bal = bal -= this.getWei(tx.value);
+                console.log(i, tx.from, tx.to, this.getWei(tx.value).toString(10));
+            }   
           }
         }
-        catch (err) {
-          console.log(err)
-        }
-
       }
+      catch (e) { console.error("Error in block " + i, e); }
+    }
+
+    return {
+      bal,
+      currentBlock,
     }
   }
 
@@ -96,8 +109,10 @@ export class AppService {
 
   getNetwork(provider: string) {
     let web3Provider = new Web3.providers.HttpProvider(provider);
-    return new Web3(web3Provider);
+    this.web3 = new Web3(web3Provider);
   }
+
+  getWei = amnt => Number(this.web3.utils.fromWei(amnt, 'ether'));
 }
 
 // let [web3, addr] = this.getBep20() as [Web3, string];
