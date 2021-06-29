@@ -23,7 +23,11 @@ export class AppService {
 
   public web3: Web3;
 
-  public async init() {
+  public init(provider: string) {
+    this.getNetwork(provider)
+  }
+
+  public async checkTransBLocks() {
     // The First way - Request All Transactions for analysis. / ERC-20. ROPSTEN Network.
     return JSON.stringify(await this.checkBlocks());
 

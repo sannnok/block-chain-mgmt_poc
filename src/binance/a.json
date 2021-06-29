@@ -1,0 +1,10 @@
+{
+	"operationName": null,
+	"query": "query ($network: EthereumNetwork!, $address: String!) {\\n  ethereum(network: $network) {\\n    address(address: {is: $address}) {\\n      balances {\\n        value\\n        currency {\\n          address\\n          symbol\\n          tokenType\\n          __typename\\n        }\\n        __typename\\n      }\\n      __typename\\n    }\\n    __typename\\n  }\\n}\\n",
+	"variables": {
+		"address": "0xb7c3a71e2f6358986c4ba67473ea54eb40e39054",
+		"limit": 10,
+		"network": "ethereum",
+		"offset": 0
+	}
+}
