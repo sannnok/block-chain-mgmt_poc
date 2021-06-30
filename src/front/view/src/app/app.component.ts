@@ -44,9 +44,11 @@ export class AppComponent {
 
     // Add list of our addrs
     if (commaDetected || spaceDetected) {
-      console.log(value.trim().split(/\s+/));
-      const values = value.split(commaDetected ? ',' : /\s+/);
-      values.forEach(v => this.addresses.push(v));
+      const values = new Set(value.split(commaDetected ? ',' : /\s+/));
+      values.forEach(v => {
+        if (!v) return;
+        this.addresses.push(v)
+      });
     } else {
       // Add our addr
       if (value) {
@@ -59,6 +61,8 @@ export class AppComponent {
     event.chipInput!.clear();
 
     this.addrCtrl.setValue(null);
+
+    this.addresses = [...new Set(this.addresses)]
   }
 
   remove(addr: string): void {
