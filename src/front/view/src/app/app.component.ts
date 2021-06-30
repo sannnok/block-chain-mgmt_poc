@@ -47,7 +47,7 @@ export class AppComponent {
       const values = new Set(value.split(commaDetected ? ',' : /\s+/));
       values.forEach(v => {
         if (!v) return;
-        this.addresses.push(v)
+        this.addresses.push(v.trim())
       });
     } else {
       // Add our addr
@@ -91,10 +91,10 @@ export class AppComponent {
 
   copyAll() {
     if (this.textAreaData) {
-      this._snackBar.open('Successsfully copied to clipboard! 🍕', 'N1');
+      this._snackBar.open('Successsfully copied to clipboard! 🍕', 'N1', { duration: 3000 });
       return;
     }
-    this._snackBar.open('No Data retrieved! ☹', 'W1');
+    this._snackBar.open('No Data retrieved! ☹', 'W1', { duration: 3000 });
   }
 
   getStringifiedData() {

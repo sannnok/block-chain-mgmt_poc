@@ -48,7 +48,7 @@ export class ScrapService {
       return {
         BSCNetwork: {
           bnbBalance: '?',
-          tokens: (res.data.data.ethereum.address[0].balances as Token[])?.map(t => ({
+          tokens: (res.data.data?.ethereum?.address[0].balances as Token[])?.map(t => ({
               name: t.currency.symbol,
               symbol: t.currency.symbol,
               balance: t.value,

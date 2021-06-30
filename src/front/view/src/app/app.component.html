@@ -31,11 +31,11 @@
   <mat-form-field class="full-width" appearance="fill" style="flex: 1" class="text-area">
     <mat-label>Response</mat-label>
     <div>
-      <button class="copy-all-btn" mat-icon-button aria-label="Copy All" [cdkCopyToClipboard]="getStringifiedData()" (click)="copyAll">
+      <button class="copy-all-btn" mat-icon-button aria-label="Copy All" [cdkCopyToClipboard]="getStringifiedData()" (click)="copyAll()">
         <mat-icon>copy_all</mat-icon>
       </button>
       <textarea matInput placeholder="Waiting for triggering...">{{ textAreaData | json }}</textarea>
     </div>
   </mat-form-field>
+  <mat-spinner *ngIf="loading"></mat-spinner>
 </div>
-<mat-spinner *ngIf="loading"></mat-spinner>
