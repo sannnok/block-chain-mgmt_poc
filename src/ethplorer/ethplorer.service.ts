@@ -41,7 +41,7 @@ export class EthplorerService {
         return {
             EthNetwork: {
                 ethBalance: res.data.ETH.balance,
-                tokens: (res.data.tokens as Token[]).map(t => ({
+                tokens: (res.data.tokens as Token[])?.map(t => ({
                     name: t.tokenInfo.name,
                     symbol: t.tokenInfo.symbol,
                     balance: t.balance / 1000000,

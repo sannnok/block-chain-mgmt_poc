@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { AppService } from './app.service';
 import { ScrapService } from './binance/binance.service';
 import { EthplorerService } from './ethplorer/ethplorer.service';
@@ -24,6 +24,24 @@ export class AppController {
       ...eth,
       ...bsc,
     };
+  }
+
+  @Post('parse')
+  async getAddressesInfo(@Body() addresses: string[] | Set<string>) {
+    const bundle = [];
+    addresses = new Set(addresses)
+    for (const addr of addresses) {
+      const eth = await this.ethplorerService.init(addr);
+      const bsc = await this.scrapService.init(addr);
+      bundle.push({
+        address: addr,
+        info: {
+          ...eth,
+          ...bsc,
+        }
+      })
+    }
+    return bundle;
   }
 
 }

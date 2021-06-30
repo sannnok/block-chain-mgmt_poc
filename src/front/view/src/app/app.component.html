@@ -1,0 +1,41 @@
+<div class="content">
+  <mat-form-field class="chip-list" appearance="fill">
+    <mat-label>Paste the wallets you want to scan</mat-label>
+    <mat-chip-list #chipList aria-label="Addresses selection">
+      <mat-chip
+        *ngFor="let addr of addresses"
+        [selectable]="selectable"
+        [removable]="removable"
+        (removed)="remove(addr)">
+        {{ addr }}
+        <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+      </mat-chip>
+      <input
+          placeholder="Type addr..."
+          style="height: 50px; flex-basis: 500px;"
+          #addrInput
+          [formControl]="addrCtrl"
+          [matAutocomplete]="auto"
+          [matChipInputFor]="chipList"
+          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+          [matChipInputAddOnBlur]="addOnBlur"
+          (matChipInputTokenEnd)="add($event)">
+    </mat-chip-list>
+    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+      <mat-option *ngFor="let addr of filteredAddresses | async" [value]="addr">
+        {{addr}}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+  <button mat-raised-button color="primary" style="height: 54px" (click)="go()">Go</button>
+  <mat-form-field class="full-width" appearance="fill" style="flex: 1" class="text-area">
+    <mat-label>Response</mat-label>
+    <div>
+      <button class="copy-all-btn" mat-icon-button aria-label="Copy All" [cdkCopyToClipboard]="getStringifiedData()" (click)="copyAll">
+        <mat-icon>copy_all</mat-icon>
+      </button>
+      <textarea matInput placeholder="Waiting for triggering...">{{ textAreaData | json }}</textarea>
+    </div>
+  </mat-form-field>
+</div>
+<mat-spinner *ngIf="loading"></mat-spinner>

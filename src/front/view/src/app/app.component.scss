@@ -1,0 +1,42 @@
+.chip-list, button, .full-width {
+    width: 100%;
+}
+
+.content {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+}
+
+::ng-deep .text-area {
+    flex: 1;
+    .mat-form-field-wrapper,
+    .mat-form-field-flex,
+    .mat-form-field-infix,
+    textarea, div {
+        height: 100%;
+    }
+
+    .copy-all-btn {
+        position: absolute;
+        top: 54px;
+        right: 62px;
+        width: unset;
+        width: 50px;
+        height: 50px;
+    
+        .mat-icon {
+            font-size: 50px;
+            line-height: 50px;
+            width: 50px;
+            height: 50px;
+        }
+    }
+}
+
+mat-spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%);
+}

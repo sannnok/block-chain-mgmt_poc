@@ -27,7 +27,7 @@ export class ScrapService {
   }
 
   async check(addr: string) {
-    const config = {
+    const queryBody = {
       operationName: null,
       query: "query ($network: EthereumNetwork!, $address: String!) {\n  ethereum(network: $network) {\n    address(address: {is: $address}) {\n      balances {\n        value\n        currency {\n          address\n          symbol\n          tokenType\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}\n",
       variables: {
@@ -43,7 +43,7 @@ export class ScrapService {
       const res = await axios({
         method: 'POST',
         url: `${URL}`,
-        data: config,
+        data: queryBody,
       });
       return {
         BSCNetwork: {
