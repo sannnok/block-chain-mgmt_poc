@@ -8,6 +8,26 @@ import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { HttpClient } from '@angular/common/http';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
+interface Token {
+  name: string;
+  symbol: string;
+  balance: number;
+}
+interface tknDataInfo {
+  EthNetwork: {
+    ethBalance: number;
+    tokens: Token[];
+  };
+  BSCNetwork: {
+    bnbBalance: number;
+    tokens: Token[];
+  }
+}
+interface tknData {
+  address: string;
+  info: tknDataInfo;
+}
+
 const BURL = "http://localhost:3000/parse/";
 
 @Component({
@@ -27,7 +47,7 @@ export class AppComponent {
   filteredAddresses: Observable<string[]>;
   addresses: string[] = [];
   allCachedAddresses: string[] = ['0x45245aCA2e6b1141dc20fad9c5910DDE0A454Bf8', '0x72f5db1a91a6c78f4c7a83793ca4ee775e86be10', '0xB7c3a71e2F6358986C4bA67473EA54eB40E39054'];
-  textAreaData: any = '';
+  textAreaData: tknData[] | undefined;
 
   @ViewChild('addrInput') addrInput!: ElementRef<HTMLInputElement>;
 
@@ -80,10 +100,10 @@ export class AppComponent {
   }
 
   go() {
-    this.textAreaData = '';
+    this.textAreaData = undefined;
 
     this.loading = true;
-    this.http.post(BURL, this.addresses).subscribe(addrs => {
+    this.http.post(BURL, this.addresses).subscribe((addrs: any) => {
       this.loading = false;
       this.textAreaData = addrs;
     });
@@ -98,7 +118,31 @@ export class AppComponent {
   }
 
   getStringifiedData() {
-    return JSON.stringify(this.textAreaData);
+    let res = '';
+    let tab = '    ';
+    // const jsonStringified = JSON.stringify(this.textAreaData);
+    const rowStr = this.textAreaData?.forEach(d => {
+      res += d.address + '\n';
+      res += tab + 'BSC: ' + d.info.BSCNetwork.bnbBalance + '\n';
+      res += this.itterateTokens(d.info.BSCNetwork.tokens);
+      res += tab + 'ETH: ' + d.info.EthNetwork.ethBalance + '\n';
+      res += this.itterateTokens(d.info.EthNetwork.tokens);
+      d.info.BSCNetwork.tokens?.forEach(t => {
+        res += tab + tab + t.symbol + ': ' + t.balance + '\n';
+      })
+    });
+    return res;
+  }
+
+  itterateTokens(tokens: Token[]) {
+    let res = '';
+    let tab = '    ';
+
+    tokens?.forEach(t => {
+      res += tab + tab + t.symbol + ': ' + t.balance + '\n';
+    })
+
+    return res;
   }
 
   private _filter(value: string): string[] {
