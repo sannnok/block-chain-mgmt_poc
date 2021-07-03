@@ -3,6 +3,7 @@
     <mat-label>Paste the wallets you want to scan</mat-label>
     <mat-chip-list #chipList aria-label="Addresses selection">
       <mat-chip
+        style="overflow: hidden"
         *ngFor="let addr of addresses"
         [selectable]="selectable"
         [removable]="removable"
@@ -12,7 +13,7 @@
       </mat-chip>
       <input
           placeholder="Type addr..."
-          style="height: 50px; flex-basis: 500px;"
+          style="height: 50px; flex-basis: 1000px;"
           #addrInput
           [formControl]="addrCtrl"
           [matAutocomplete]="auto"

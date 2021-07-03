@@ -7,6 +7,7 @@ import { map, startWith } from 'rxjs/operators';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { HttpClient } from '@angular/common/http';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { environment } from '../environments/environment';
 
 interface Token {
   name: string;
@@ -28,7 +29,7 @@ interface tknData {
   info: tknDataInfo;
 }
 
-const BURL = "http://localhost:3000/parse/";
+const BURL = environment.sUrl;
 
 @Component({
   selector: 'app-root',
@@ -52,6 +53,7 @@ export class AppComponent {
   @ViewChild('addrInput') addrInput!: ElementRef<HTMLInputElement>;
 
   constructor(private http: HttpClient, private _snackBar: MatSnackBar) {
+    console.log(environment.production)
     this.filteredAddresses = this.addrCtrl.valueChanges.pipe(
         startWith(null),
         map((fruit: string | null) => fruit ? this._filter(fruit) : this.allCachedAddresses.slice()));
@@ -121,7 +123,10 @@ export class AppComponent {
     let res = '';
     let tab = '    ';
     // const jsonStringified = JSON.stringify(this.textAreaData);
+
     const rowStr = this.textAreaData?.forEach(d => {
+      if (!d.info) return
+
       res += d.address + '\n';
       res += tab + 'BSC: ' + d.info.BSCNetwork.bnbBalance + '\n';
       res += this.itterateTokens(d.info.BSCNetwork.tokens);
@@ -130,6 +135,7 @@ export class AppComponent {
       d.info.BSCNetwork.tokens?.forEach(t => {
         res += tab + tab + t.symbol + ': ' + t.balance + '\n';
       })
+      res += '\n';
     });
     return res;
   }

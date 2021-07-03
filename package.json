@@ -28,7 +28,7 @@
     "bscscan-api": "^1.0.1",
     "cheerio": "^1.0.0-rc.10",
     "crypto": "^1.0.1",
-    "etherscan-api": "^10.0.5",
+    "etherscan-api": "^100.0.0",
     "ethplorer-js": "0.0.7",
     "ganache-cli": "^6.12.2",
     "querystring": "^0.2.1",
