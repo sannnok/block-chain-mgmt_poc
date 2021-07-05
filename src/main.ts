@@ -3,11 +3,8 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
 const allowedOrigins = [
-  'http://beingno.one:3000',
-  'ionic://localhost',
+  'http://beingno.one',
   'http://localhost',
-  'http://localhost:8080',
-  'http://localhost:8100',
 ];
 
 async function bootstrap() {
@@ -15,16 +12,13 @@ async function bootstrap() {
   const opt: CorsOptions = {
     origin: true
   }
-  app.enableCors({
-    origin: true,
-  });
+  app.enableCors(opt);
 
   // Case whitelist defined
-  const whitelist = ['http://beingno.one'];
   app.enableCors({
     origin: (origin, callback) => {
       console.log("handling....", origin);  
-    if (whitelist.indexOf(origin) !== -1) {
+    if (allowedOrigins.indexOf(origin) !== -1) {
         console.log("allowed cors for:", origin)
         callback(null, true)
       } else {
