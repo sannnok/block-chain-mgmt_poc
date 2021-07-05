@@ -28,7 +28,7 @@ interface tknData {
   info: tknDataInfo;
 }
 
-const BURL = "http://localhost:3000/parse/";
+const BURL = "http://beingno.one:3000/parse/";
 
 @Component({
   selector: 'app-root',
